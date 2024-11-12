@@ -49,6 +49,14 @@ Ie. change the amount of resources on the fly.
 Ie. avoid *admin accounts* as much as possible, just have the *developer* level - if you are allowed to change the product, you are allowed to change ci.
 ### separate access of premerge and postmerge
 By either using two different jobs or two different servers (if you dont trust yourself)
+### leverage the Jenkins ecosystem
+For example out of the box support for all kinds of execution environments,
+scms and notification tools.
+
+Be careful though, only use what is really needed.
+### tinkerability
+One of the core goals of this demo is to showcase how much can be achived in "user space",
+without breaking the core system (Jenkins).
 
 ## And what is TODO?
 ### Examples of credential management, especially credential segregation
