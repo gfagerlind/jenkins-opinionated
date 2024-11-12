@@ -23,6 +23,9 @@ but i want to give as much power to power users as possible, and see what they c
 
 The idea is that all the features are created and defined by the development community,
 you can as a developer, in this system create your own new "gocd" or "zuul", test it and deploy it just like any regular product change.
+
+There need of course to be somekind of casc boilerplate - this is currently TODO
+
 ### Hand over "emergency valve" functions, like prio etc to the development community
 In these examples you can quite easily put your own change set on higher priority up until merge,
 if you want etc - this is a good thing. Either trust, or fix, your community.
@@ -52,3 +55,7 @@ By either using two different jobs or two different servers (if you dont trust y
 TODO
 ### A one click setup
 You need to install the plugins and create the job right now
+
+Somethings are not easy to decide in a demo though
+### The rebase details of the dependent gate
+But it will be easy I think
