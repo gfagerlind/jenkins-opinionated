@@ -4,7 +4,6 @@
     withParameters()
     {
         declareParameter(string(name: 'JOB_TYPE', defaultValue: ''))
-        env.JOB_TYPE = params.JOB_TYPE
         if (params.JOB_TYPE == "d") {
             import_file("dep.groovy")
         }
