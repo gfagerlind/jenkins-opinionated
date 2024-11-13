@@ -1,0 +1,3 @@
+lockable-resources:latest
+configuration-as-code: latest
+cloudbees-folder: latest

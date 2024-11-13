@@ -1,0 +1,83 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin"
+
+  # Security Realm for user authentication
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+
+  # Authorization Strategy
+  authorizationStrategy:
+    projectMatrix:
+      entries:
+        - user:
+            name: admin
+            permissions:
+              - Overall/Administer
+  labelAtoms:
+  - name: "built-in"
+  - name: "label"
+  labelString: "label"
+  numExecutors: 20
+# Tool Configuration
+tool:
+  git:
+    installations:
+      - name: "Default"
+        home: "/usr/bin/git"
+
+security:
+  scriptApproval:
+    approvedSignatures:
+    - "method hudson.model.Saveable save"
+    - "method org.jenkins.plugins.lockableresources.LockableResource getName"
+    - "method org.jenkins.plugins.lockableresources.LockableResourcesManager createResourceWithLabel\
+      \ java.lang.String java.lang.String"
+    - "method org.jenkins.plugins.lockableresources.LockableResourcesManager getResourcesWithLabel\
+      \ java.lang.String"
+    - "method org.jenkins.plugins.lockableresources.LockableResourcesManager removeResources\
+      \ java.util.List"
+    - "staticMethod org.jenkins.plugins.lockableresources.LockableResourcesManager\
+      \ get"
+    - "method org.jenkinsci.plugins.workflow.graph.FlowNode getId"
+    - "method org.jenkinsci.plugins.workflow.graph.FlowNode getParents"
+    - "new java.lang.Throwable"
+
+jobs:
+  - script: |
+      styles = ['check','gate', 'post-merge']
+      for (s in styles) {
+        folder("${style}") {
+          properties {
+            folderCredentialsProperty {
+              domainCredentials {
+                domainCredentials {
+                  domain {
+                    name("creds")
+                    description("Different credentials for different jobs")
+                  }
+                  credentials {
+                    usernamePasswordCredentialsImpl {
+                      scope("GLOBAL")
+                      id("test_user_id")
+                      description("User for deployments on test environment")
+                      username("${style}")
+                      password("${style}password")
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        pipelineJob("${style}/job") {
+          definition {
+            cpsScm {
+              scm { '/git/jenkins-opinionated' }
+            }
+          }
+        }
+      }
