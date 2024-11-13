@@ -1,3 +1,10 @@
-lockable-resources:latest
-configuration-as-code: latest
 cloudbees-folder: latest
+# needed for jenkins server bootstrap
+configuration-as-code: latest
+git: latest
+# needed for jenkins server bootstrap
+job-dsl: latest
+lockable-resources:latest
+matrix-auth: latest
+workflow-cps: latest
+workflow-job: latest
