@@ -14,8 +14,8 @@ def getLocalUrlId(flowNode = null) {
 // TODO: yeah, just add an optional node label and timeout or what ever you want.
 def job(cmd) {
     def id = getLocalUrlId()
-    def url = "${BUILD_URL}/pipeline-console/?selected-node=${id}"
-    def log = "${BUILD_URL}/pipeline-console/log?nodeId=${id}"
+    def url = "${env.BUILD_URL}/pipeline-console/?selected-node=${id}"
+    def log = "${env.BUILD_URL}/pipeline-console/log?nodeId=${id}"
     try {
         echo "running ${url}"
         node() {

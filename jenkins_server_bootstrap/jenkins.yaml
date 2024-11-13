@@ -30,6 +30,11 @@ tool:
         home: "/usr/bin/git"
 
 unclassified:
+  location:
+    adminAddress: "jenkins-opinionated"
+    # Pretty ugly, but the interaction between jenkins casc and BUILD_URL triggers
+    # an issue where for example "localhost:8080" is considered a bad url
+    url: "http://localhost"
   scmGit:
     globalConfigEmail: "jenkins-user@example.com"
     globalConfigName: "jenkins-user"
