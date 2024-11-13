@@ -1,3 +1,4 @@
+build-timeout: latest
 cloudbees-folder: latest
 # needed for jenkins server bootstrap
 configuration-as-code: latest
@@ -6,5 +7,10 @@ git: latest
 job-dsl: latest
 lockable-resources:latest
 matrix-auth: latest
+pipeline-model-api: latest
+pipeline-model-definition: latest
+pipeline-model-extensions: latest
+pipeline-stage-step
+workflow-basic-steps
 workflow-cps: latest
 workflow-job: latest

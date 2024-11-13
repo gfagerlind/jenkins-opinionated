@@ -29,6 +29,11 @@ tool:
       - name: "Default"
         home: "/usr/bin/git"
 
+unclassified:
+  scmGit:
+    globalConfigEmail: "jenkins-user@example.com"
+    globalConfigName: "jenkins-user"
+
 security:
   scriptApproval:
     approvedSignatures:
