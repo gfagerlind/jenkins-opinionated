@@ -1,6 +1,13 @@
 // top jenkins file, without boilerplate
 { ->
     import_file('./libs/DeclareParameter.groovy')
+    withCredentials([usernamePassword(credentialsId: 'test_user_id',
+                                      usernameVariable: 'USERNAME',
+                                      passwordVariable: 'PASSWORD')]) {
+        sh '''#!/usr/bin/bash
+            echo "$USERNAME $PASSWORD (Jenkins will try to not leak your passwords, but we can force it: ${PASSWORD^^})"
+        '''
+    }
     withParameters()
     {
         declareParameter(string(name: 'JOB_TYPE', defaultValue: ''))

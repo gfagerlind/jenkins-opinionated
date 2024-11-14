@@ -58,7 +58,7 @@ security:
 
 jobs:
   - script: |
-      styles = ['check','gate', 'post-merge']
+      styles = ['proj-a','proj-b']
       for (style in styles) {
         folder(style) {
           properties {

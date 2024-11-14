@@ -41,6 +41,15 @@ As in "the code needs to be tested exactly as how it will be merged, so if someo
 ### gocdesque latest first
 As in "run the pipeline stages on the latest candidate, leapfrogging over candidates that are valid, but older"
 In this implementation you can use multiple frogs, if you want (as in allowing X number of parallel executions of each stage).
+### dynamic, consistent and atomic modifications of the ci system
+Together with the product code!
+### implicit support for variants
+As the product lifetime goes on, usually you find yourself in a situation,
+where you want to keep an old release "alive", and keep ci working "as it was".
+
+This is of course quite tricky, and in essence, the only way to be knowing if its alive
+is to keep running it from time to time, but at least this setup should plausibly support you with that.
+
 ### global resource priority
 Ie. the check, gate and post-merge all share resources and you decide on how to prioritize between them.
 ### dynamic resources and queues
@@ -57,13 +66,12 @@ Be careful though, only use what is really needed.
 ### tinkerability
 One of the core goals of this demo is to showcase how much can be achived in "user space",
 without breaking the core system (Jenkins).
+### using as few jenkins concepts (and plugins) as possible
+To leave those degrees of freedom for the inevitable new problem or requirement that comes around the corner.
+This includes: Runnigs multiple jobs, multiple jenkins instances, writing or using more exotic plugins.
 
 ## And what is TODO?
 ### Examples of credential management, especially credential segregation
-TODO
-### A one click setup
-You need to install the plugins and create the job right now
 
-Somethings are not easy to decide in a demo though
 ### The rebase details of the dependent gate
 But it will be easy I think
