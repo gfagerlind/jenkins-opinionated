@@ -10,6 +10,9 @@
     }
     withParameters()
     {
+        // Typically this job is triggered by some scm event, and will
+        // decide on what to do depending of the event type.
+        // Or what ever you want to do...
         declareParameter(string(name: 'JOB_TYPE', defaultValue: ''))
         if (params.JOB_TYPE == "d") {
             import_file("dep.groovy")

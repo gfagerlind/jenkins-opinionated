@@ -29,7 +29,7 @@ class DependencyUpdateException extends Throwable {}
 
     env.gateContext = ""
     // dependentGate(wip = How many parallel gate jobs) { the code}
-    dependentGate = { wip = 1, cls ->
+    dependentGate = { wip = 1, testcls, mergecls ->
         // add assert that no one is using dependentGate inside dependent gate
         assert ! binding.hasVariable('dependentGatePassed'): "dependentGate inside dependentGate is not allowed"
         def dependentGatePassed = false
@@ -67,7 +67,7 @@ class DependencyUpdateException extends Throwable {}
                             watchdog: { watchdog.call() },
                             failFast: true,
                             p: {
-                                cls.call()
+                                testcls.call()
                                 dependentGatePassed = true
                             }
                         )
@@ -78,6 +78,7 @@ class DependencyUpdateException extends Throwable {}
                             }
                             echo "dependent job finished, check watchdog a last time"
                             checkDependency()
+                            mergecls()
                         }
                     } catch(DependencyUpdateException e) {
                         dependentGatePassed = false
@@ -85,7 +86,7 @@ class DependencyUpdateException extends Throwable {}
                 }
             } else {
                 // no watchdogging and junk, just run the closure
-                cls.call()
+                testcls.call()
             }
         }
     }

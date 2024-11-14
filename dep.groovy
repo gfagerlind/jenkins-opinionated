@@ -5,7 +5,8 @@
         import_file('libs/TypicalJob.groovy')
     },
     main: {
-        dependentGate(4) {
+        dependentGate(4, {
+            // TODO: the rebase activities
             def echohej = { echo "hej" }
             def fail = { node { sh "false" }}
 
@@ -32,7 +33,11 @@
 
             // Todo generate jobs
             parallel(jobs)
+        },
+        {
+            // TODO: the merge activities
         }
+        )
     // ------------------------------------------------------------------
     }
 ]
