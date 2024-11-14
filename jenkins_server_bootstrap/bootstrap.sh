@@ -3,7 +3,7 @@ set -ue -o pipefail
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JENKINS_HOME="${SCRIPT_DIR}/jenkins_home"
 GITROOT=$(git rev-parse --show-toplevel)
-PORT=80
+PORT=8123
 
 docker build -t jo ${SCRIPT_DIR}
 docker run \

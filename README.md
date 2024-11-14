@@ -1,11 +1,20 @@
 # jenkins-opinionated
-Some basic facts:
+
+TODO - Work in progress, not really mature
+
 The repo is divided into two parts:
 The [jenkins_server_bootstrap](jenkins_server_bootstrap) part and the demo part (everything else).
 
 The jenkins_server_bootstrap is to bootstrap the demo - its not part of it!
 
 There might be nicer ways and better patterns to bootstrap jenkins.
+
+## TLDR - how to run the demo
+You need to have docker installed, running and current user in the docker group.
+Then just run:
+`jenkins_server_bootstrap/bootstrap.sh`
+And you should get a server on `localhost:8123`, login is `admin:admin`.
+Commit changes to this repo, and rerun the jobs.
 
 ## So - what are the opinions?
 
