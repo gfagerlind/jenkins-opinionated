@@ -18,8 +18,16 @@ Commit changes to this repo, and rerun the jobs.
 
 ## So - what are the opinions?
 
+### CI user is just a developer with an appetite for the mundane
+Make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers.
+
+[Here](./reg.sh) is a [hacky example](./reg.mak) on how you can define the CI dependencies *outside* of the concept of jenkins, and then have jenkins being a secondary citizen that derives the work it needs to be done from the definitions of the primary citizen - the developer.
+
+Strongly avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
+
 ### Use jenkins core
 Use jenkins, its the boring vanilla!
+If you can find something more boring and more vanilla, use that instead.
 
 Use [jenkins plugins](jenkins_server_bootstrap/plugins.txt), but only the most tried and true and old ones.
 ### Do not use a lot of jenkins jobs
@@ -99,6 +107,11 @@ This includes:
 * Creating multiple jobs,
 * Running multiple jenkins instances,
 * Writing or using more exotic plugins.
+### define and verify your CI dependency tree without jenkins
+By using a pattern similar to [reg.sh](./reg.sh)/[reg.mak](./reg.mak),
+you can allow the developers to add new tests, rules for when and where those tests should be run,
+and be able to verify, locally, that they indeed got it right.
+
 ### some less opinionated features
 * [credentials](top.groovy#L4)
 * [dynamic parameters](libs/DeclareParameter.groovy)
@@ -106,7 +119,6 @@ This includes:
 
 ## And what is TODO?
 ### Elaborate on more stuff wrt. how to think about CI/CD systems, with jenkins in particular
-Things like *make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers*.
 Storing logs, jobs.
 Setting up nodes, containers, VMs.
 ### The rebase and merge details of the dependent gate

@@ -6,9 +6,6 @@ USER root
 RUN apt-get update && apt-get install -y make
 USER jenkins
 ENV CASC_JENKINS_CONFIG="/jenkins.yaml"
-# bind mount instead
-#COPY jenkins.yaml /jenkins.yaml
-# ENV CASC_JENKINS_CONFIG="/git/jeknins-opinionated/jenkins.yaml"
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true"
 ENV GIT_AUTHOR_NAME=jenkins
 ENV GIT_AUTHOR_EMAIL=jenkins@opinionated

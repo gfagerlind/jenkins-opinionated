@@ -1,5 +1,6 @@
 // declare parameters and assure they are consistent.
 { ->
+    import_file('libs/TypicalJob.groovy')
     runScope = { scope ->
         node {
             checkout scm

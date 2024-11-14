@@ -4,14 +4,15 @@
         /// -----------------------------------------------------------------
         // GOCD style WIP limit per stage, with inverse priority (or not)
         // AND dynamic wip limit.
-        // TODO i think this is wrong
-        stageWithWip = import_file('libs/StageWithWip.groovy')
         import_file('libs/Reg.groovy')
+        import_file('libs/StageWithWip.groovy')
     },
     main: {
-        stageWithWip(name: "postmerge", wip: 4) {
+        // TODO: this could also be generated to avoid defining so much in jenkins/groovy
+        // for example, in make, you could have post-post-merge depend on post-merge
+        stageWithWip(name: "post-merge", wip: 4) {
             try {
-                runScope('postmerge')
+                runScope('post-merge')
             } catch (Exception e) {
                 echo 'here aborted'
                 echo "${e}"
@@ -19,8 +20,7 @@
             }
         }
         stageWithWip(name: "post-post-merge", wip: 2) {
-            echo "b"
-            sleep 10
+            runScope('post-post-merge')
         }
     }
 ]
