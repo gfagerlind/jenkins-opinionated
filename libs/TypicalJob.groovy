@@ -12,14 +12,15 @@ def getLocalUrlId(flowNode = null) {
 }
 
 // TODO: yeah, just add an optional node label and timeout or what ever you want.
-def job(cmd) {
+def job(timeout_s, label, cmd) {
     def id = getLocalUrlId()
     def url = "${env.BUILD_URL}/pipeline-console/?selected-node=${id}"
     def log = "${env.BUILD_URL}/pipeline-console/log?nodeId=${id}"
     try {
         echo "running ${url}"
-        node() {
-            timeout(time: 1, unit: 'MINUTES') {
+        node(label) {
+            checkout scm
+            timeout(time: timeout_s, unit: 'SECONDS') {
                 cmd()
             }
         }
@@ -30,14 +31,14 @@ def job(cmd) {
     }
 }
 
-def _shJob(cmd) {
-    job() {
+def _shJob(timeout_s, label, cmd) {
+    job(timeout_s, label) {
         sh(cmd)
     }
 }
 
 def call() {
-    shJob = {cmd -> _shJob(cmd)}
+    shJob = {timeout_s, label, cmd -> _shJob(timeout_s, label, cmd)}
 }
 
 return this

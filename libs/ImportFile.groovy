@@ -23,7 +23,7 @@ def call(file) {
     }
     if (! env.NODE_NAME) {
         node {
-            checkout scmGit()
+            checkout scm
             _import_file()
         }
     } else {

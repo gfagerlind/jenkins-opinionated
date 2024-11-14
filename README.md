@@ -70,6 +70,8 @@ is to keep running it from time to time, but at least this setup should plausibl
 
 ### global resource priority
 Ie. the check, gate and post-merge all share resources and you decide on how to prioritize between them.
+
+[Here](libs/NodeWithPriority.groovy)
 ### consistent definition of CI activities between check, gate and post-merge
 Eg. so you feel confident that what worked in check will work in gate,
 what worked in gate will work in post-merge, and what has been tested to work in post-merge will untouched work in check.

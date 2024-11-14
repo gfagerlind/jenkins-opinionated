@@ -2,6 +2,9 @@ FROM jenkins/jenkins:lts-jdk17
 COPY plugins.txt /plugins.txt
 RUN jenkins-plugin-cli --plugin-file /plugins.txt
 COPY jenkins.yaml /jenkins.yaml
+USER root
+RUN apt-get update && apt-get install -y make
+USER jenkins
 ENV CASC_JENKINS_CONFIG="/jenkins.yaml"
 # bind mount instead
 #COPY jenkins.yaml /jenkins.yaml

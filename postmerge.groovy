@@ -4,25 +4,21 @@
         /// -----------------------------------------------------------------
         // GOCD style WIP limit per stage, with inverse priority (or not)
         // AND dynamic wip limit.
+        // TODO i think this is wrong
         stageWithWip = import_file('libs/StageWithWip.groovy')
+        import_file('libs/Reg.groovy')
     },
     main: {
-        stageWithWip(name: "c", wip: 4) {
+        stageWithWip(name: "postmerge", wip: 4) {
             try {
-                echo "a"
-                sleep(30 - (currentBuild.number - 374) * 5)
-                echo "a"
-                sleep(30 - (currentBuild.number - 374) * 5)
-                echo "a"
-                sleep(30 - (currentBuild.number - 374) * 5)
-                echo "done"
+                runScope('postmerge')
             } catch (Exception e) {
                 echo 'here aborted'
                 echo "${e}"
                 throw e
             }
         }
-        stageWithWip(name: "b", wip: 2) {
+        stageWithWip(name: "post-post-merge", wip: 2) {
             echo "b"
             sleep 10
         }

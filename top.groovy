@@ -24,6 +24,6 @@
             import_file("check.groovy")
         }
     }
-    // What about not dependent gate? - that is trivial, just remove the dependentGate closure,
-    // What if i want to do wacky combinations of stageWithWip and dependentGate? - go right ahead, but i dont support dependentGate in dependentGate because i dont know what it would mean
+    // What if i want to do wacky combinations of stageWithWip and dependentGate?
+    // - go right ahead, but i dont support dependentGate in dependentGate because i dont know what it would mean
 }
