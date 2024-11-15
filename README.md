@@ -121,6 +121,19 @@ and be able to verify, locally, that they indeed got it right.
 ### Elaborate on more stuff wrt. how to think about CI/CD systems, with jenkins in particular
 Storing logs, jobs.
 Setting up nodes, containers, VMs.
+### Polish
+But the goal of the demo is not to have something to polished, rather to show the flexibility.
+
+But as a hint, instead of having a bunch of business logic in [top.groovy],[dep.groovy], [check.groovy], [postmerge.groovy], you could transfer that logic into eg. [reg.mak].
+
+The flow would then be that jenkins will ask [reg.mak] to define:
+* What scope to run on which CI event (PR, merge, etc).
+* What tests belongs to what scope.
+* What, and in what order, subscopes is part of a scope (think how postmerge works)
+* What the WIP limit should be
+
+That could then be updated and verified (offline) by any committed developer.
+
 ### The rebase and merge details of the dependent gate
 But it will be easy I think
 
