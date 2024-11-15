@@ -25,6 +25,8 @@ Make it so any developer with the right credentials can do anything, and then ma
 
 Strongly avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
 
+In extension this means that only define *jenkins specific* things in [libs](./libs) - if it can reasonable be pushed to the local developer environment do it.
+
 ### Use jenkins core
 Use jenkins, its the boring vanilla!
 If you can find something more boring and more vanilla, use that instead.
@@ -36,8 +38,8 @@ gate and post-merge context, all in one single job.
 
 That might be a bit *excessive* but the point is that you *can*.
 
-You can of course decide to split up the cake how ever you want
-(NOTE: Current proposal to manage credentials implies multiple jobs for that)
+You can of course decide to split up the cake how ever you want.
+> *_NOTE:_* Current proposal to manage credentials implies multiple jobs for that)
 
 ### Do not configure the jobs in the GUI (nor anything else)
 This goes without saying. Jenkins is very easy to mess up by allowing any kind of important configuration.
@@ -49,20 +51,21 @@ you can as a developer, in this system create your own new "gocd" or "zuul", tes
 
 ### Hand over "emergency valve" functions, like priority etc to the development community
 In these examples you can quite easily put your own change set on higher priority up until merge,
-if you want etc - this is a good thing. Either trust, or fix, your community.
+if you want, etc - this is a good thing. Either trust, or fix, your community.
 ### Do not share resources between communities
-I do not like sharing resources cross communities.
+Avoid sharing resources across communities.
 The definition of a community is a set of people with a shared goal, shared priorities and a shared
 timeline.
 
 ## So - what are the features?
 
 ### zuulesque dependent gate
-As in "the code needs to be tested exactly as how it will be merged, so if someone is before you in line to merge, run your test on the speculation that they are successful. If they fail, restart your tests"
+As in *"the code needs to be tested exactly as how it will be merged, so if someone is before you in line to merge, run your test on the speculation that they are successful. If they fail, restart your tests"*
 
 [Here](libs/DependentGate.groovy)
 ### gocdesque latest first
-As in "run the pipeline stages on the latest candidate, leapfrogging over candidates that are valid, but older"
+As in *"run the pipeline stages on the latest candidate, leapfrogging over candidates that are valid, but older"*
+
 In this implementation you can use multiple frogs, if you want (as in allowing X number of parallel executions of each stage).
 
 [Here](libs/StageWithWip.groovy)
@@ -97,7 +100,7 @@ By either using two different jobs (folders) or two different servers (if you do
 For example out of the box support for all kinds of execution environments,
 SCMs and notification tools.
 
-Be careful though, only use what is really needed.
+Be careful though, only use what is really needed - each additional plugin is an additional risk.
 ### tinkerability
 One of the core goals of this demo is to showcase how much can be achieved in "user space",
 without breaking the core system (jenkins).
@@ -116,17 +119,19 @@ and be able to verify, locally, that they indeed got it right.
 * [credentials](top.groovy#L4)
 * [dynamic parameters](libs/DeclareParameter.groovy)
 * A weak, but surprisingly competitive [visualisation](libs/TypicalJob.groovy#L16)
+* A minor timeout [example](libs/TypicalJob.groovy#L23)
+* A minor post run cleanup [example](libs/TypicalJob.groovy#L29)
 
 ## And what is TODO?
 ### Elaborate on more stuff wrt. how to think about CI/CD systems, with jenkins in particular
-Storing logs, jobs.
-Setting up nodes, containers, VMs.
+* Storing logs, jobs.
+* Setting up nodes, containers, VMs.
 ### Polish
 But the goal of the demo is not to have something to polished, rather to show the flexibility.
 
-But as a hint, instead of having a bunch of business logic in [top.groovy],[dep.groovy], [check.groovy], [postmerge.groovy], you could transfer that logic into eg. [reg.mak].
+But as a hint, instead of having a bunch of business logic in [top.groovy](top.groovy),[dep.groovy](dep.groovy), [check.groovy](check.groovy), [postmerge.groovy](postmerge.groovy), you could transfer that logic into eg. [reg.mak](reg.mak).
 
-The flow would then be that jenkins will ask [reg.mak] to define:
+The flow would then be that jenkins will ask [reg.mak](./reg.mak) to define:
 * What scope to run on which CI event (PR, merge, etc).
 * What tests belongs to what scope.
 * What, and in what order, subscopes is part of a scope (think how postmerge works)

@@ -26,6 +26,7 @@ def job(timeout_s, label, cmd) {
         }
         echo "exit ${log}"
     } catch (hudson.AbortException e) {
+        // Here you can do clean ups
         echo "${url} failed"
         throw e
     }
