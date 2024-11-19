@@ -18,6 +18,12 @@ Commit changes to this repo, and rerun the jobs.
 
 ## So - what are the opinions?
 
+### This is not the optimal jenkins setup
+Its not _*the*_ setup, its _a_ setup, reasonably and relatively good, that showcase things jenkins can do,
+almost out of the box. Its not a module to be used, it's not a set of libraries,
+it's a set of examples - connected to the aspects and practices that I want to promote
+wrt. CI.
+
 ### CI user is just a developer with an appetite for the mundane
 Make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers.
 
