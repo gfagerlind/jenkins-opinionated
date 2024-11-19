@@ -21,7 +21,7 @@ class DependencyUpdateException extends Throwable {}
     // get the context (what dependency tree) of a job
     getGateContext = { watchedJob ->
         if (watchedJob) {
-            return "${watchedJob.buildVariables.gateContext}\n${currentBuild.number}"
+            return "${watchedJob.buildVariables.gateContext}\n${GIT_COMMIT}"
         } else {
             return "${currentBuild.number}"
         }

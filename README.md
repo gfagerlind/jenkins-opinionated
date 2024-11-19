@@ -23,7 +23,7 @@ Make it so any developer with the right credentials can do anything, and then ma
 
 [Here](./reg.sh) is a [hacky example](./reg.mak) on how you can define the CI dependencies *outside* of the concept of jenkins, and then have jenkins being a secondary citizen that derives the work it needs to be done from the definitions of the primary citizen - the developer.
 
-Strongly avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
+Avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
 
 In extension this means that only define *jenkins specific* things in [libs](./libs) - if it can reasonable be pushed to the local developer environment do it.
 
@@ -32,6 +32,17 @@ Use jenkins, its the boring vanilla!
 If you can find something more boring and more vanilla, use that instead.
 
 Use [jenkins plugins](jenkins_server_bootstrap/plugins.txt), but only the most tried and true and old ones.
+
+With that said, if you do have an alternative to certain aspects put on jenkins,
+for example:
+* visualisation
+* credential management
+* worker management (like kubernetes or similar)
+* log management
+
+by all means, use it - but, preferably, use it directly from the local developer environment,
+so *any developer* can use it.
+
 ### Do not use a lot of jenkins jobs
 In this setup you could, in theory run multiple repos, with multiple branches, in both a check,
 gate and post-merge context, all in one single job.
@@ -41,21 +52,46 @@ That might be a bit *excessive* but the point is that you *can*.
 You can of course decide to split up the cake how ever you want.
 > *_NOTE:_* Current proposal to manage credentials implies multiple jobs for that)
 
+And no, `job-dsl` is not good enough - still too many jobs, still not good enough to ensure
+consistency between the running server and the configuration as code.
+
+On top of this put as little configuration in the jobs as well, for example avoid defining
+parameters and such as that also adds complexity and risks inconsistencies.
+
 ### Do not configure the jobs in the GUI (nor anything else)
 This goes without saying. Jenkins is very easy to mess up by allowing any kind of important configuration.
+
+This means that you can with relative confidence get jenkins back up in a short time
+after a data storage crash or after a major version lift.
 ### Put the "configuration as code" together with the source code of the product
 This is why this example uses as little [JCasC](jenkins_server_bootstrap/jenkins.yaml) as possible - its a means to an end.
+
+>*__NOTE__* The jenkins_server_bootstrap would *not* be in the source code repo in this example - since it will not stay consistent with the running server.
 
 The idea is that all the features are created and defined by the development community,
 you can as a developer, in this system create your own new "gocd" or "zuul", test it and deploy it just like any regular product change.
 
+If you instead take the segregation approach the tendency is that you will split the community,
+in a way that does not benefit value flow.
+
 ### Hand over "emergency valve" functions, like priority etc to the development community
 In these examples you can quite easily put your own change set on higher priority up until merge,
 if you want, etc - this is a good thing. Either trust, or fix, your community.
+
+Though what is important when using these "emergency valve" is to assure that there is a paper trail,
+this is part of why you want to have it established and shared before it is needed, otherwise there
+is a tendency for panic solutions which may or may not have paper trails.
+
+And of course the paper trail is not to put blame, but to be able to figure out what actions
+where taken and to be able to analyze the consequences.
+
 ### Do not share resources between communities
 Avoid sharing resources across communities.
 The definition of a community is a set of people with a shared goal, shared priorities and a shared
 timeline.
+
+It is easy to just state _*we are now a community together*_, but if it's not true,
+you will have conflicts over and suboptimal use of the shared resources.
 
 ## So - what are the features?
 
@@ -92,7 +128,7 @@ Ie. change the amount of resources on the fly.
 [Here](libs/NodeWithPriority.groovy)
 ### most of the functionality at equal access level
 Ie. avoid *admin accounts* as much as possible, just have the *developer* level - if you are allowed to change the product, you are allowed to change CI.
-### separate access of eg. check, gate and post-merge
+### separate access and credentials of eg. check, gate and post-merge
 By either using two different jobs (folders) or two different servers (if you don't trust yourself)
 
 [Here](top.groovy#L4)
@@ -116,7 +152,6 @@ you can allow the developers to add new tests, rules for when and where those te
 and be able to verify, locally, that they indeed got it right.
 
 ### some less opinionated features
-* [credentials](top.groovy#L4)
 * [dynamic parameters](libs/DeclareParameter.groovy)
 * A weak, but surprisingly competitive [visualisation](libs/TypicalJob.groovy#L16)
 * A minor timeout [example](libs/TypicalJob.groovy#L23)
@@ -142,6 +177,6 @@ That could then be updated and verified (offline) by any committed developer.
 ### The rebase and merge details of the dependent gate
 But it will be easy I think
 
-[Rebase](dep.groovy#L9)
+[Rebase](libs/TypicalJob.groovy#L26)
 
-[Merge](dep.groovy#L37)
+[Merge](dep.groovy#L13)

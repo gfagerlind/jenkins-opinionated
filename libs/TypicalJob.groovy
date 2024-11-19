@@ -20,6 +20,11 @@ def job(timeout_s, label, cmd) {
         echo "running ${url}"
         node(label) {
             checkout scm
+            // this is ugly, but see it as just a demo
+            // TODO: fix so this works in demo mode
+            // if (env.gateContext) {
+            //     sh('git cherry-pick ${env.gateContext.replace("\n"," ")')
+            // }
             timeout(time: timeout_s, unit: 'SECONDS') {
                 cmd()
             }
