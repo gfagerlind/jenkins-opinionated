@@ -27,11 +27,27 @@ wrt. CI.
 ### CI user is just a developer with an appetite for the mundane
 Make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers.
 
+Instead of *the CI system behaviour is the truth* you want to have *the test system is the truth* together with *the CI system mimics the local development environment* and *the local development environment is consistent and correct*.
+
 [Here](./reg.sh) is a [hacky example](./reg.mak) on how you can define the CI dependencies *outside* of the concept of jenkins, and then have jenkins being a secondary citizen that derives the work it needs to be done from the definitions of the primary citizen - the developer.
 
 Avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
 
 In extension this means that only define *jenkins specific* things in [libs](./libs) - if it can reasonable be pushed to the local developer environment do it.
+
+### Put the "configuration as code" together with the source code of the product
+This is why this example uses as little [JCasC](jenkins_server_bootstrap/jenkins.yaml) as possible - its a means to an end.
+
+>*__NOTE__* The jenkins_server_bootstrap would *not* be in the source code repo in this example - since it will not stay consistent with the running server.
+
+The reason is two fold, first, treat the CI configuration version consistency
+(that you know which version was used) with the same vigor as the product code.
+
+Second reason is that all the features are created and defined by the development community,
+you can as a developer, in this system create your own new "gocd" or "zuul", test it and deploy it just like any regular product change.
+
+If you instead take the segregation approach the tendency is that you will split the community,
+in a way that does not benefit value flow.
 
 ### Use jenkins core
 Use jenkins, its the boring vanilla!
@@ -69,16 +85,6 @@ This goes without saying. Jenkins is very easy to mess up by allowing any kind o
 
 This means that you can with relative confidence get jenkins back up in a short time
 after a data storage crash or after a major version lift.
-### Put the "configuration as code" together with the source code of the product
-This is why this example uses as little [JCasC](jenkins_server_bootstrap/jenkins.yaml) as possible - its a means to an end.
-
->*__NOTE__* The jenkins_server_bootstrap would *not* be in the source code repo in this example - since it will not stay consistent with the running server.
-
-The idea is that all the features are created and defined by the development community,
-you can as a developer, in this system create your own new "gocd" or "zuul", test it and deploy it just like any regular product change.
-
-If you instead take the segregation approach the tendency is that you will split the community,
-in a way that does not benefit value flow.
 
 ### Hand over "emergency valve" functions, like priority etc to the development community
 In these examples you can quite easily put your own change set on higher priority up until merge,
@@ -91,7 +97,7 @@ is a tendency for panic solutions which may or may not have paper trails.
 And of course the paper trail is not to put blame, but to be able to figure out what actions
 where taken and to be able to analyze the consequences.
 
-### Do not share resources between communities
+### Watch out for sharing resources between communities
 Avoid sharing resources across communities.
 The definition of a community is a set of people with a shared goal, shared priorities and a shared
 timeline.
@@ -99,7 +105,29 @@ timeline.
 It is easy to just state _*we are now a community together*_, but if it's not true,
 you will have conflicts over and suboptimal use of the shared resources.
 
+Also When you start sharing resources the ownership gets muddy,
+making it harder to control and confirm that the right amount and the right type of resources are procured and owned.
+
 ## So - what are the features?
+### dynamic, consistent and atomic modifications of the CI system
+Together with the product code!
+There is even a hacky [library system](libs/ImportFile.groovy) since its quite finicky to get true atomic behaviour of the regular jenkins groovy library plugin.
+
+### consistent definition of CI activities between check, gate and post-merge
+Eg. so you feel confident that what worked in check will work in gate,
+what worked in gate will work in post-merge, and what has been tested to work in post-merge will untouched work in check.
+
+### most of the functionality at equal access level
+Ie. avoid *admin accounts* as much as possible, just have the *developer* level - if you are allowed to change the product, you are allowed to change CI.
+
+### define and verify your CI dependency tree without jenkins
+By using a pattern similar to [reg.sh](./reg.sh)/[reg.mak](./reg.mak),
+you can allow the developers to add new tests, rules for when and where those tests should be run,
+and be able to verify, locally, that they indeed got it right.
+
+### tinkerability
+One of the core goals of this demo is to showcase how much can be achieved in "user space",
+without breaking the core system (jenkins).
 
 ### zuulesque dependent gate
 As in *"the code needs to be tested exactly as how it will be merged, so if someone is before you in line to merge, run your test on the speculation that they are successful. If they fail, restart your tests"*
@@ -111,9 +139,6 @@ As in *"run the pipeline stages on the latest candidate, leapfrogging over candi
 In this implementation you can use multiple frogs, if you want (as in allowing X number of parallel executions of each stage).
 
 [Here](libs/StageWithWip.groovy)
-### dynamic, consistent and atomic modifications of the CI system
-Together with the product code!
-There is even a hacky [library system](libs/ImportFile.groovy) since its quite finicky to get true atomic behaviour of the regular jenkins groovy library plugin.
 ### implicit support for variants
 As the product lifetime goes on, usually you find yourself in a situation,
 where you want to keep an old release "alive", and keep CI working "as it was".
@@ -125,15 +150,10 @@ is to keep running it from time to time, but at least this setup should plausibl
 Ie. the check, gate and post-merge all share resources and you decide on how to prioritize between them.
 
 [Here](libs/NodeWithPriority.groovy)
-### consistent definition of CI activities between check, gate and post-merge
-Eg. so you feel confident that what worked in check will work in gate,
-what worked in gate will work in post-merge, and what has been tested to work in post-merge will untouched work in check.
 ### dynamic resources and queues
 Ie. change the amount of resources on the fly.
 
 [Here](libs/NodeWithPriority.groovy)
-### most of the functionality at equal access level
-Ie. avoid *admin accounts* as much as possible, just have the *developer* level - if you are allowed to change the product, you are allowed to change CI.
 ### separate access and credentials of eg. check, gate and post-merge
 By either using two different jobs (folders) or two different servers (if you don't trust yourself)
 
@@ -143,19 +163,12 @@ For example out of the box support for all kinds of execution environments,
 SCMs and notification tools.
 
 Be careful though, only use what is really needed - each additional plugin is an additional risk.
-### tinkerability
-One of the core goals of this demo is to showcase how much can be achieved in "user space",
-without breaking the core system (jenkins).
 ### using as few jenkins concepts (and plugins) as possible
 To leave those degrees of freedom for the inevitable new problem or requirement that comes around the corner.
 This includes:
 * Creating multiple jobs,
 * Running multiple jenkins instances,
 * Writing or using more exotic plugins.
-### define and verify your CI dependency tree without jenkins
-By using a pattern similar to [reg.sh](./reg.sh)/[reg.mak](./reg.mak),
-you can allow the developers to add new tests, rules for when and where those tests should be run,
-and be able to verify, locally, that they indeed got it right.
 
 ### some less opinionated features
 * [dynamic parameters](libs/DeclareParameter.groovy)
