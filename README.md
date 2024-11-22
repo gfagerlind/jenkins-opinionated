@@ -21,33 +21,33 @@ wrt. CI.
 The repo is divided into two parts:
 The [jenkins_server_bootstrap](jenkins_server_bootstrap) part and the demo part (everything else).
 
-The jenkins_server_bootstrap is to bootstrap the demo - its not part of it!
+The jenkins_server_bootstrap is to bootstrap the demo - it is not part of it!
 
 There might be nicer ways and better patterns to bootstrap jenkins.
 
-## So - what are the opinions?
+## So - what are the *opinionated* opinions?
 
-### CI user is just a developer with an appetite for the mundane
+### Make it work for everyone, make the CI user one of everyone
 Make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers.
 
 Instead of *the CI system behaviour is the truth* you want to have *the test system is the truth* together with *the CI system mimics the local development environment* and *the local development environment is consistent and correct*.
 
-[Here](./reg.sh) is a [hacky example](./reg.mak) on how you can define the CI dependencies *outside* of the concept of jenkins, and then have jenkins being a secondary citizen that derives the work it needs to be done from the definitions of the primary citizen - the developer.
+[Here](./reg.sh) is a [hacky example](./reg.mak) on how you can define the CI flow *outside* of the concept of jenkins, and then have jenkins being a secondary citizen that adds just adds the boilerplate it needs, and then runs the definitions of the primary citizen - the developer.
 
-Avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
+Avoid having tests and builds that *only* work in the CI system, for example say that you have a rig computer, and you attach it to your jenkins server - then DO NOT hook it up to be directly triggered from the corresponding CI step that wants to run the test - instead, do the round-about way of creating a mechanism in the repo to trigger a test with "current checked out git revision" on the specific rig - then *any developer* can use it, and the CI system is just any developer, so it can too.
 
-In extension this means that only define *jenkins specific* things in [libs](./libs) - if it can reasonable be pushed to the local developer environment do it.
+This also means that you should only define *jenkins specific* things in [libs](./libs) - if it can be pushed to the local developer environment, do it. For example, do not add a bunch of shell code to the libs files, make it into a script, put it into the local developer environment and let jenkins run it from there.
 
 ### Put the "configuration as code" together with the source code of the product
-This is why this example uses as little [JCasC](jenkins_server_bootstrap/jenkins.yaml) as possible - its a means to an end.
 
->*__NOTE__* The jenkins_server_bootstrap would *not* be in the source code repo in this example - since it will not stay consistent with the running server.
+>*__NOTE:__* The `jenkins_server_bootstrap`/[JCasC](jenkins_server_bootstrap/jenkins.yaml) would *not* be in the source code repo in this example - since it will not stay consistent with the running server.
+> So `jenkins_server_bootstrap` should be regarded as a deviation from this rule
 
-The reason is two fold, first, treat the CI configuration version consistency
+The reason is twofold, first, treat the CI configuration version consistency
 (that you know which version was used) with the same vigor as the product code.
 
-Second reason is that all the features are created and defined by the development community,
-you can as a developer, in this system create your own new "gocd" or "zuul", test it and deploy it just like any regular product change.
+Second reason is that all the features are created and defined by the development community.
+You can as a developer in this system create your own new "gocd" or "zuul", then test it and deploy it just like any regular product change.
 
 If you instead take the segregation approach the tendency is that you will split the community,
 in a way that does not benefit value flow.
@@ -69,24 +69,24 @@ by all means, use it - but, preferably, use it directly from the local developer
 so *any developer* can use it.
 
 ### Do not use a lot of jenkins jobs
-In this setup you could, in theory run multiple repos, with multiple branches, in both a check,
+In this setup, you could in theory run multiple repos, with multiple branches, in both a check,
 gate and post-merge context, all in one single job.
 
 That might be a bit *excessive* but the point is that you *can*.
 
-You can of course decide to split up the cake how ever you want.
-> *_NOTE:_* Current proposal to manage credentials implies multiple jobs for that)
+You can of course decide to split up the cake however you want.
+> *__NOTE:__* Current proposal to manage credentials implies multiple jobs for that
 
 And no, `job-dsl` is not good enough - still too many jobs, still not good enough to ensure
 consistency between the running server and the configuration as code.
 
-On top of this put as little configuration in the jobs as well, for example avoid defining
+On top of this put as little configuration in the jobs, for example avoid defining
 parameters and such as that also adds complexity and risks inconsistencies.
 
 ### Do not configure the jobs in the GUI (nor anything else)
 This goes without saying. Jenkins is very easy to mess up by allowing any kind of important configuration.
 
-This means that you can with relative confidence get jenkins back up in a short time
+If nothing is manually configured, you can with relative confidence get jenkins back up in a short time
 after a data storage crash or after a major version lift.
 
 ### Hand over "emergency valve" functions, like priority etc to the development community
@@ -98,7 +98,7 @@ this is part of why you want to have it established and shared before it is need
 is a tendency for panic solutions which may or may not have paper trails.
 
 And of course the paper trail is not to put blame, but to be able to figure out what actions
-where taken and to be able to analyze the consequences.
+were taken and to be able to analyze the consequences.
 
 ### Watch out for sharing resources between communities
 Avoid sharing resources across communities.
@@ -108,7 +108,7 @@ timeline.
 It is easy to just state _*we are now a community together*_, but if it's not true,
 you will have conflicts over and suboptimal use of the shared resources.
 
-Also When you start sharing resources the ownership gets muddy,
+When you start sharing resources the ownership gets muddy,
 making it harder to control and confirm that the right amount and the right type of resources are procured and owned.
 
 ## So - what are the features?
@@ -175,6 +175,9 @@ This includes:
 * Running multiple jenkins instances,
 * Writing or using more exotic plugins.
 
+Also - don't forget to _pin_ or _freeze_ them to a specific version,
+so you can get the exact environment back.
+
 ### some less opinionated features
 * [dynamic parameters](libs/DeclareParameter.groovy)
 * A weak, but surprisingly competitive [visualisation](libs/TypicalJob.groovy#L16)
@@ -199,7 +202,7 @@ The flow would then be that jenkins will ask [reg.mak](./reg.mak) to define:
 
 That could then be updated and verified (offline) by any committed developer.
 
-PS. Something that to me is satisfying is to be able to do:
+*PS. Something that to me is satisfying is to be able to do:*
 > **Developer 1**: oh? CI says that test `a_test` failed on revision `123COFFEE`, how do I reproduce?
 >
 > **Developer 2**: You do `git checkout 123COFFEE && a_test` and (*if CI is consistent*) you will get it reproduced right here, right now.
