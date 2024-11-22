@@ -19,8 +19,24 @@
                 throw e
             }
         }
-        stageWithWip(name: "post-post-merge", wip: 2) {
-            runScope('post-post-merge')
+        parallel (
+            postpostmerge: {
+                stageWithWip(name: "post-post-merge", wip: 2) {
+                    runScope('post-post-merge')
+                }
+            },
+            paralleltopostpostmerge: {
+                stage('serial stage a') {
+                    echo "Just to show that fan out works as well"
+                }
+                stage('serial stage b') {
+                    echo "yeah, you can serial steps here, or fan out again"
+                }
+            },
+            failFast: false
+        )
+        stage("post-post-post-merge") {
+            echo "And fan in - but don't do that, its annoying!"
         }
     }
 ]

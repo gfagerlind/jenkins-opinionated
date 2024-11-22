@@ -117,10 +117,12 @@ There is even a hacky [library system](libs/ImportFile.groovy) since its quite f
 Eg. so you feel confident that what worked in check will work in gate,
 what worked in gate will work in post-merge, and what has been tested to work in post-merge will untouched work in check.
 
+Together with *the CI system mimics the local development environment* and *the local development environment is consistent and correct*, you should be able to be confident that what worked in a CI test will work locally.
+
 ### most of the functionality at equal access level
 Ie. avoid *admin accounts* as much as possible, just have the *developer* level - if you are allowed to change the product, you are allowed to change CI.
 
-### define and verify your CI dependency tree without jenkins
+### define and verify your CI flow tree without jenkins
 By using a pattern similar to [reg.sh](./reg.sh)/[reg.mak](./reg.mak),
 you can allow the developers to add new tests, rules for when and where those tests should be run,
 and be able to verify, locally, that they indeed got it right.
@@ -173,8 +175,9 @@ This includes:
 ### some less opinionated features
 * [dynamic parameters](libs/DeclareParameter.groovy)
 * A weak, but surprisingly competitive [visualisation](libs/TypicalJob.groovy#L16)
-* A minor timeout [example](libs/TypicalJob.groovy#L23)
-* A minor post run cleanup [example](libs/TypicalJob.groovy#L29)
+* A minor timeout [example](libs/TypicalJob.groovy#L30)
+* A minor post run cleanup [example](libs/TypicalJob.groovy#L35)
+* Some [fan-out](postmerge.groovy#L28)/[fan-in](postmerge.groovy#L38) examples.
 
 ## And what is TODO?
 ### Elaborate on more stuff wrt. how to think about CI/CD systems, with jenkins in particular
