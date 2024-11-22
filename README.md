@@ -2,12 +2,6 @@
 
 TODO - Work in progress, not really mature
 
-The repo is divided into two parts:
-The [jenkins_server_bootstrap](jenkins_server_bootstrap) part and the demo part (everything else).
-
-The jenkins_server_bootstrap is to bootstrap the demo - its not part of it!
-
-There might be nicer ways and better patterns to bootstrap jenkins.
 
 ## TLDR - how to run the demo
 You need to have docker installed, running and current user in the docker group.
@@ -16,13 +10,22 @@ Then just run:
 And you should get a server on `localhost:8123`, login is `admin:admin`.
 Commit changes to this repo, and rerun the jobs.
 
-## So - what are the opinions?
-
-### This is not the optimal jenkins setup
+## This is not the optimal jenkins setup
 Its not _*the*_ setup, its _a_ setup, reasonably and relatively good, that showcase things jenkins can do,
 almost out of the box. Its not a module to be used, it's not a set of libraries,
 it's a set of examples - connected to the aspects and practices that I want to promote
 wrt. CI.
+
+### About jenkins_server_bootstrap
+
+The repo is divided into two parts:
+The [jenkins_server_bootstrap](jenkins_server_bootstrap) part and the demo part (everything else).
+
+The jenkins_server_bootstrap is to bootstrap the demo - its not part of it!
+
+There might be nicer ways and better patterns to bootstrap jenkins.
+
+## So - what are the opinions?
 
 ### CI user is just a developer with an appetite for the mundane
 Make it so any developer with the right credentials can do anything, and then make the CI system one of the any developers.
