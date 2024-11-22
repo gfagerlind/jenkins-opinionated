@@ -173,7 +173,8 @@ To leave those degrees of freedom for the inevitable new problem or requirement 
 This includes:
 * Creating multiple jobs,
 * Running multiple jenkins instances,
-* Writing or using more exotic plugins.
+* Writing or using more exotic plugins,
+* Having jobs triggering other jobs, or jobs triggering the same job with updated parameters.
 
 Also - don't forget to _pin_ or _freeze_ them to a specific version,
 so you can get the exact environment back.

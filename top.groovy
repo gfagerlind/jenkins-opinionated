@@ -13,7 +13,7 @@
         // Typically this job is triggered by some scm event, and will
         // decide on what to do depending of the event type.
         // Or what ever you want to do...
-        declareParameter(string(name: 'JOB_TYPE', defaultValue: ''))
+        declareParameter(string(name: 'JOB_TYPE', defaultValue: '', description: "c for check,p for postmerge or d for dependent gate"))
         if (params.JOB_TYPE == "d") {
             import_file("dep.groovy")
         }

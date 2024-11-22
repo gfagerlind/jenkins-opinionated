@@ -84,6 +84,11 @@ jobs:
           }
         }
         pipelineJob(style + "/job") {
+          parameters {
+            // this is not technically necessary, but simplifies things in the demo
+            // in reality you should avoid parameters.
+            stringParam("JOB_TYPE", "", "c for check,p for postmerge or d for dependent gate")
+          }
           definition {
             cpsScm {
               scm {
