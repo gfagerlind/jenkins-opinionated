@@ -196,6 +196,11 @@ The flow would then be that jenkins will ask [reg.mak](./reg.mak) to define:
 
 That could then be updated and verified (offline) by any committed developer.
 
+PS. Something that to me is satisfying is to be able to do:
+> **Developer 1**: oh? CI says that test `a_test` failed on revision `123COFFEE`, how do I reproduce?
+>
+> **Developer 2**: You do `git checkout 123COFFEE && a_test` and (*if CI is consistent*) you will get it reproduced right here, right now.
+
 ### The rebase and merge details of the dependent gate
 But it will be easy I think
 
