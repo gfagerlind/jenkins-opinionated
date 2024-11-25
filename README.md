@@ -83,6 +83,15 @@ consistency between the running server and the configuration as code.
 On top of this put as little configuration in the jobs, for example avoid defining
 parameters and such as that also adds complexity and risks inconsistencies.
 
+#### What about Multibranch Pipelines?
+For [multibranch pipelines](https://www.jenkins.io/doc/book/pipeline/multibranch), it most likely depends on what git integration (eg. how merges are done).
+If the vanilla way is to use multibranch pipelines then it's a good choice.
+
+If it's for visualisation, it's questionable.
+
+It's not considered in this demo since it makes it much more complex to understand,
+while actually not that complex to setup (should be straight forward).
+
 ### Do not configure the jobs in the GUI (nor anything else)
 This goes without saying. Jenkins is very easy to mess up by allowing any kind of important configuration.
 
