@@ -19,7 +19,6 @@ def poorMansMilestone(stage) {
     env.milestones += milestone
 }
 { ->
-    import_file('libs/Queue.groovy')
     // set intial value of the milestones
     env.milestones = ""
     stageWithWip = { args, cls ->

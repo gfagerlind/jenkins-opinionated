@@ -1,9 +1,9 @@
 // declare parameters and assure they are consistent.
 { ->
-    import_file('libs/TypicalJob.groovy')
     runScope = { scope ->
+        echo 'runScope'
         node {
-            checkout scm
+            checkout_scm()
             sh("./reg.sh ${scope} OPINIONATED=just_write > scope.groovy")
             scope = load("scope.groovy")
         }

@@ -11,6 +11,20 @@ def getLocalUrlId(flowNode = null) {
     }
 }
 
+apply_dependent_gate = {
+    sh("git rev-parse --verify CHERRY_PICK_HEAD 2> /dev/null && git cherry-pick --abort || true")
+    sh("git checkout ${params.GIT_REF}~ -B test")
+    try {
+        sh("git cherry-pick ${env.gateContext.replace('\n',' ')}")
+     } catch (hudson.AbortException e) {
+        // NOTE: currently there is no speculation that what ever we have a conflict with
+        // will fail and be thrown out of the queue, so this could pass - we just abort here.
+        sh("git diff")
+        sh("git cherry-pick --abort")
+        throw e
+    }
+}
+
 // TODO: yeah, just add an optional node label and timeout or what ever you want.
 def job(timeout_s, label, cmd) {
     def id = getLocalUrlId()
@@ -21,12 +35,12 @@ def job(timeout_s, label, cmd) {
     try {
         echo "running ${url}"
         node(label) {
-            checkout scm
+            checkout_scm()
             // this is ugly, but see it as just a demo
             // TODO: fix so this works in demo mode
-            // if (env.gateContext) {
-            //     sh('git cherry-pick ${env.gateContext.replace("\n"," ")')
-            // }
+            if (env.gateContext && env.gateContext != params.GIT_REF) {
+                apply_dependent_gate()
+            }
             timeout(time: timeout_s, unit: 'SECONDS') {
                 cmd()
             }

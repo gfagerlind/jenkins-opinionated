@@ -171,7 +171,7 @@ Ie. change the amount of resources on the fly.
 ### separate access and credentials of eg. check, gate and post-merge
 By either using two different jobs (folders) or two different servers (if you don't trust yourself)
 
-[Here](top.groovy#L4)
+[Here](Jenkinsfile#L12)
 ### leverage the jenkins ecosystem
 For example out of the box support for all kinds of execution environments,
 SCMs and notification tools.
@@ -193,7 +193,7 @@ so you can get the exact environment back.
 * A weak, but surprisingly competitive [visualisation](libs/TypicalJob.groovy#L16)
 * A minor timeout [example](libs/TypicalJob.groovy#L30)
 * A minor post run cleanup [example](libs/TypicalJob.groovy#L35)
-* Some [fan-out](postmerge.groovy#L28)/[fan-in](postmerge.groovy#L38) examples.
+* Some [fan-out](top.groovy#L25)/[fan-in](top.groovy#L35) examples.
 
 ## And what is TODO?
 ### Elaborate on more stuff wrt. how to think about CI/CD systems, with jenkins in particular
@@ -202,7 +202,7 @@ so you can get the exact environment back.
 ### Polish
 But the goal of the demo is not to have something to polished, rather to show the flexibility.
 
-But as a hint, instead of having a bunch of business logic in [top.groovy](top.groovy),[dep.groovy](dep.groovy), [check.groovy](check.groovy), [postmerge.groovy](postmerge.groovy), you could transfer that logic into eg. [reg.mak](reg.mak).
+But as a hint, instead of having a bunch of business logic in [top.groovy](top.groovy), you could transfer that logic into eg. [reg.mak](reg.mak).
 
 The flow would then be that jenkins will ask [reg.mak](./reg.mak) to define:
 * What scope to run on which CI event (PR, merge, etc).
@@ -217,9 +217,7 @@ That could then be updated and verified (offline) by any committed developer.
 >
 > **Developer 2**: You do `git checkout 123C0FFEE && a_test` and (*if CI is consistent*) you will get it reproduced right here, right now.
 
-### The rebase and merge details of the dependent gate
-But it will be easy I think
+### The merge details of the dependent gate
+But it will be easy I think to implement - but hard to reason about.
 
-[Rebase](libs/TypicalJob.groovy#L26)
-
-[Merge](dep.groovy#L13)
+[Merge](top.groovy#L11)

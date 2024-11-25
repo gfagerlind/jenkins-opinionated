@@ -1,7 +1,5 @@
 class DependencyUpdateException extends Throwable {}
 { ->
-    import_file('libs/StageWithWip.groovy')
-
     // find the first job older than `build` that is still running
     getLastRunningDependentGate = { build ->
         if (build == null)
@@ -21,15 +19,20 @@ class DependencyUpdateException extends Throwable {}
     // get the context (what dependency tree) of a job
     getGateContext = { watchedJob ->
         if (watchedJob) {
-            return "${watchedJob.buildVariables.gateContext}\n${GIT_COMMIT}"
+            if(watchedJob.buildVariables.gateContext == "wait") {
+                echo "wait for the dependent job to figure out its context"
+                sleep 1
+            }
+            // TODO: GIT_REF can be a branch, change to git revision
+            return "${watchedJob.buildVariables.gateContext}\n${GIT_REF}"
         } else {
-            return "${currentBuild.number}"
+            return "${GIT_REF}"
         }
     }
 
-    env.gateContext = ""
     // dependentGate(wip = How many parallel gate jobs) { the code}
     dependentGate = { wip = 1, testcls, mergecls ->
+        env.gateContext = "wait"
         // add assert that no one is using dependentGate inside dependent gate
         assert ! binding.hasVariable('dependentGatePassed'): "dependentGate inside dependentGate is not allowed"
         def dependentGatePassed = false
@@ -44,10 +47,10 @@ class DependencyUpdateException extends Throwable {}
             if ( watchedJob.result != 'SUCCESS' && getLastRunningDependentGate(currentBuild.getPreviousBuild()) != watchedJob) {
                 watchedJob = getLastRunningDependentGate(currentBuild.getPreviousBuild())
             }
+            echo "is ${env.gateContext}"
             if ( getGateContext(watchedJob) != env.gateContext ) {
                 echo "dependency chain has changed, restart test, was ${env.gateContext}"
                 env.gateContext = getGateContext(watchedJob)
-                echo "is ${env.gateContext}"
                 throw new DependencyUpdateException()
             }
         }
@@ -78,7 +81,6 @@ class DependencyUpdateException extends Throwable {}
                             }
                             echo "dependent job finished, check watchdog a last time"
                             checkDependency()
-                            mergecls()
                         }
                     } catch(DependencyUpdateException e) {
                         dependentGatePassed = false
@@ -89,5 +91,6 @@ class DependencyUpdateException extends Throwable {}
                 testcls.call()
             }
         }
+        mergecls()
     }
 }
