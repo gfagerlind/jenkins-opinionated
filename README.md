@@ -10,6 +10,9 @@ Then just run:
 And you should get a server on `localhost:8123`, login is `admin:admin`.
 Commit changes to this repo, and rerun the jobs.
 
+There is also an example suite, that can be triggered (needs `curl` and `make`), run:
+`make -C jenkins_server_bootstrap/ test_all`
+
 ## This is not the optimal jenkins setup
 Its not _*the*_ setup, its _a_ setup, reasonably and relatively good, that showcase things jenkins can do,
 almost out of the box. Its not a module to be used, it's not a set of libraries,
